@@ -1,16 +1,5 @@
-# esecure
+# ESecure
 
-A new Flutter project.
+Hybrid Key Management System for End-to-End Encrypted Cloud Storage.
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Final Year Project implementing a hybrid key derivation model that combines Argon2 password-derived keys with a device-bound secret to generate encryption keys and protect files using AES-GCM encryption.
