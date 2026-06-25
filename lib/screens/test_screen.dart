@@ -46,19 +46,19 @@ class _TestScreenState extends State<TestScreen> {
       final salt = _crypto.generateSalt();
 
       final key =
-      await _crypto.derivePasswordKey(
+      await _crypto.derivePasswordOnlyKey(
         password: passwordController.text,
         salt: salt,
       );
 
       EncryptedPayload payload =
-      await _crypto.encrypt(
+      await _crypto.encryptData(
         key: key,
         plaintext: messageController.text,
       );
 
       final result =
-      await _crypto.decrypt(
+      await _crypto.decryptData(
         key: key,
         payload: payload,
       );
@@ -66,7 +66,7 @@ class _TestScreenState extends State<TestScreen> {
       append("PASSWORD-ONLY SUCCESS");
       append(result);
 
-      _crypto.clearKey(key);
+      key.fillRange(0, key.length, 0);
     } catch (e) {
       append(e.toString());
     }
@@ -92,13 +92,13 @@ class _TestScreenState extends State<TestScreen> {
       );
 
       EncryptedPayload payload =
-      await _crypto.encrypt(
+      await _crypto.encryptData(
         key: key,
         plaintext: messageController.text,
       );
 
       final result =
-      await _crypto.decrypt(
+      await _crypto.decryptData(
         key: key,
         payload: payload,
       );
@@ -106,7 +106,7 @@ class _TestScreenState extends State<TestScreen> {
       append("HYBRID SUCCESS");
       append(result);
 
-      _crypto.clearKey(key);
+      key.fillRange(0, key.length, 0);
     } catch (e) {
       append(e.toString());
     }
@@ -124,20 +124,26 @@ class _TestScreenState extends State<TestScreen> {
 
     BenchmarkResult result =
     await _benchmark.runBenchmark(
-      password: passwordController.text,
+      passwordController.text,
     );
 
     append(
-        "Password Average = ${result.passwordOnlyAverageMs.toStringAsFixed(2)} ms");
+        "Password Average = ${result.averagePasswordOnlyMs.toStringAsFixed(2)} ms");
 
     append(
-        "Hybrid Average = ${result.hybridAverageMs.toStringAsFixed(2)} ms");
+        "Hybrid Average = ${result.averageHybridMs.toStringAsFixed(2)} ms");
 
     append(
-        "Password StdDev = ${result.passwordOnlyStdDev.toStringAsFixed(2)}");
+        "Fastest Password = ${result.fastestPasswordOnly} ms");
 
     append(
-        "Hybrid StdDev = ${result.hybridStdDev.toStringAsFixed(2)}");
+        "Slowest Password = ${result.slowestPasswordOnly} ms");
+
+    append(
+        "Fastest Hybrid = ${result.fastestHybrid} ms");
+
+    append(
+        "Slowest Hybrid = ${result.slowestHybrid} ms");
 
     setState(() {
       loading = false;

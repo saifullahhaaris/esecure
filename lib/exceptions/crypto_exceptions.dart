@@ -1,35 +1,31 @@
-class KeyDerivationException implements Exception {
+class CryptoException implements Exception {
   final String message;
 
-  KeyDerivationException(this.message);
+  CryptoException(this.message);
 
   @override
-  String toString() => 'KeyDerivationException: $message';
+  String toString() {
+    return "CryptoException: $message";
+  }
 }
 
-class EncryptionException implements Exception {
-  final String message;
-
-  EncryptionException(this.message);
-
-  @override
-  String toString() => 'EncryptionException: $message';
+class KeyDerivationException extends CryptoException {
+  KeyDerivationException(String message) : super(message);
 }
 
-class DecryptionException implements Exception {
-  final String message;
-
-  DecryptionException(this.message);
-
-  @override
-  String toString() => 'DecryptionException: $message';
+class EncryptionException extends CryptoException {
+  EncryptionException(String message) : super(message);
 }
 
-class SecureStorageException implements Exception {
-  final String message;
-
-  SecureStorageException(this.message);
-
-  @override
-  String toString() => 'SecureStorageException: $message';
+class DecryptionException extends CryptoException {
+  DecryptionException(String message) : super(message);
 }
+
+class SecureStorageException extends CryptoException {
+  SecureStorageException(String message) : super(message);
+}
+
+
+
+
+

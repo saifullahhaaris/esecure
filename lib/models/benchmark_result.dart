@@ -1,14 +1,22 @@
 class BenchmarkResult {
-  final double passwordOnlyAverageMs;
-  final double hybridAverageMs;
+  final double averagePasswordOnlyMs;
+  final double averageHybridMs;
 
-  final double passwordOnlyStdDev;
-  final double hybridStdDev;
+  final int fastestPasswordOnly;
+  final int slowestPasswordOnly;
 
-  const BenchmarkResult({
-    required this.passwordOnlyAverageMs,
-    required this.hybridAverageMs,
-    required this.passwordOnlyStdDev,
-    required this.hybridStdDev,
+  final int fastestHybrid;
+  final int slowestHybrid;
+
+  BenchmarkResult({
+    required this.averagePasswordOnlyMs,
+    required this.averageHybridMs,
+    required this.fastestPasswordOnly,
+    required this.slowestPasswordOnly,
+    required this.fastestHybrid,
+    required this.slowestHybrid,
   });
 }
+
+
+

@@ -1,44 +1,40 @@
 import '../constants/crypto_constants.dart';
 import '../models/benchmark_result.dart';
-import '../services/crypto_service.dart';
-import '../utils/helper_functions.dart';
+import 'crypto_service.dart';
 
 class BenchmarkService {
   final CryptoService _cryptoService = CryptoService();
 
-  Future<BenchmarkResult> runBenchmark({
-    required String password,
-  }) async {
-    final List<int> passwordOnlyTimes = [];
-    final List<int> hybridTimes = [];
+  Future<BenchmarkResult> runBenchmark(
+    String password,
+  ) async {
+    final salt = _cryptoService.generateSalt();
 
-    // Warm-up runs
-    for (int i = 0; i < CryptoConstants.warmupRuns; i++) {
-      final salt = _cryptoService.generateSalt();
+    // Warm-up
+    await _cryptoService.derivePasswordOnlyKey(
+      password: password,
+      salt: salt,
+    );
 
-      await _cryptoService.derivePasswordKey(
-        password: password,
-        salt: salt,
-      );
+    await _cryptoService.deriveHybridKey(
+      password: password,
+      salt: salt,
+    );
 
-      await _cryptoService.deriveHybridKey(
-        password: password,
-        salt: salt,
-      );
-    }
+    List<int> passwordOnlyTimes = [];
+    List<int> hybridTimes = [];
 
-    // Benchmark runs
-    for (int i = 0; i < CryptoConstants.benchmarkIterations; i++) {
-      final salt = _cryptoService.generateSalt();
-
+    for (int i = 0; i < CryptoConstants.benchmarkRuns; i++) {
       final sw1 = Stopwatch()..start();
 
-      await _cryptoService.derivePasswordKey(
+      await _cryptoService.derivePasswordOnlyKey(
         password: password,
         salt: salt,
       );
 
       sw1.stop();
+
+      passwordOnlyTimes.add(sw1.elapsedMilliseconds);
 
       final sw2 = Stopwatch()..start();
 
@@ -49,34 +45,33 @@ class BenchmarkService {
 
       sw2.stop();
 
-      passwordOnlyTimes.add(
-        sw1.elapsedMilliseconds,
-      );
-
-      hybridTimes.add(
-        sw2.elapsedMilliseconds,
-      );
+      hybridTimes.add(sw2.elapsedMilliseconds);
     }
 
-    final passwordMean =
+    double avgPassword =
         passwordOnlyTimes.reduce((a, b) => a + b) /
             passwordOnlyTimes.length;
 
-    final hybridMean =
+    double avgHybrid =
         hybridTimes.reduce((a, b) => a + b) /
             hybridTimes.length;
 
     return BenchmarkResult(
-      passwordOnlyAverageMs: passwordMean,
-      hybridAverageMs: hybridMean,
-      passwordOnlyStdDev:
-      HelperFunctions.standardDeviation(
-        passwordOnlyTimes,
-      ),
-      hybridStdDev:
-      HelperFunctions.standardDeviation(
-        hybridTimes,
-      ),
+      averagePasswordOnlyMs: avgPassword,
+      averageHybridMs: avgHybrid,
+      fastestPasswordOnly: passwordOnlyTimes.reduce((a, b) => a < b ? a : b),
+      slowestPasswordOnly: passwordOnlyTimes.reduce((a, b) => a > b ? a : b),
+      fastestHybrid: hybridTimes.reduce((a, b) => a < b ? a : b),
+      slowestHybrid: hybridTimes.reduce((a, b) => a > b ? a : b),
     );
   }
 }
+
+
+
+
+
+
+
+
+

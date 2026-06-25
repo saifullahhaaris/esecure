@@ -3,13 +3,13 @@ class EncryptedPayload {
   final String nonce;
   final String mac;
 
-  const EncryptedPayload({
+  EncryptedPayload({
     required this.ciphertext,
     required this.nonce,
     required this.mac,
   });
 
-  Map<String, String> toMap() {
+  Map<String, dynamic> toJson() {
     return {
       'ciphertext': ciphertext,
       'nonce': nonce,
@@ -17,11 +17,16 @@ class EncryptedPayload {
     };
   }
 
-  factory EncryptedPayload.fromMap(Map<String, String> map) {
+  factory EncryptedPayload.fromJson(Map<String, dynamic> json) {
     return EncryptedPayload(
-      ciphertext: map['ciphertext']!,
-      nonce: map['nonce']!,
-      mac: map['mac']!,
+      ciphertext: json['ciphertext'],
+      nonce: json['nonce'],
+      mac: json['mac'],
     );
   }
 }
+
+
+
+
+
